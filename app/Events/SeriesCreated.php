@@ -20,12 +20,11 @@ class SeriesCreated
      * @return void
      */
     public function __construct(
-        public readonly string $serieNome,
-        public readonly int $serieId,
+        public readonly string $seriesName,
+        public readonly int $seriesId,
         public readonly int $seriesSeasonsQty,
         public readonly int $seriesEpisodesPerSeason,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.
