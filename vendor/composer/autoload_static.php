@@ -521,7 +521,6 @@ class ComposerStaticInit04eb802fbf961c20e928c24be4aded76
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
-        'App\\Events\\SeriesCreated' => __DIR__ . '/../..' . '/app/Events/SeriesCreated.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
@@ -554,9 +553,6 @@ class ComposerStaticInit04eb802fbf961c20e928c24be4aded76
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
         'App\\Http\\Requests\\SeriesFormRequest' => __DIR__ . '/../..' . '/app/Http/Requests/SeriesFormRequest.php',
-        'App\\Listeners\\EmailUsersAboutSeriesCreated' => __DIR__ . '/../..' . '/app/Listeners/EmailUsersAboutSeriesCreated.php',
-        'App\\Listeners\\LogSeriesCreated' => __DIR__ . '/../..' . '/app/Listeners/LogSeriesCreated.php',
-        'App\\Mail\\SeriesCreated' => __DIR__ . '/../..' . '/app/Mail/SeriesCreated.php',
         'App\\Models\\Episode' => __DIR__ . '/../..' . '/app/Models/Episode.php',
         'App\\Models\\Season' => __DIR__ . '/../..' . '/app/Models/Season.php',
         'App\\Models\\Series' => __DIR__ . '/../..' . '/app/Models/Series.php',
