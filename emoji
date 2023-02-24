@@ -1,0 +1,112 @@
+<div class="rating">
+  <h3>Você gostou deste produto?</h3>
+  <div class="emoji">
+    <span class="emoji-1" data-value="1">&#x1F641;</span>
+    <span class="emoji-2" data-value="2">&#x1F610;</span>
+    <span class="emoji-3" data-value="3">&#x1F642;</span>
+  </div>
+</div>
+
+<div class="rating">
+  <h3>Você gostou disso?</h3>
+  <div class="emoji">
+    <span class="emoji-1" data-value="1">&#x1F641;</span>
+    <span class="emoji-2" data-value="2">&#x1F610;</span>
+    <span class="emoji-3" data-value="3">&#x1F642;</span>
+  </div>
+</div>
+
+<div class="rating">
+  <h3>Você gostou de outro?</h3>
+  <div class="emoji">
+    <span class="emoji-1" data-value="1">&#x1F641;</span>
+    <span class="emoji-2" data-value="2">&#x1F610;</span>
+    <span class="emoji-3" data-value="3">&#x1F642;</span>
+  </div>
+</div>
+<style>
+  .rating {
+margin-bottom: 20px;
+}
+
+.rating h3 {
+margin-bottom: 10px;
+}
+
+.emoji {
+display: flex;
+justify-content: space-between;
+}
+
+.emoji span {
+font-size: 40px;
+cursor: pointer;
+}
+
+.emoji span.selected {
+font-size: 50px;
+color: #FFC107;
+}
+</style>
+<script>
+  const emojis1 = document.querySelectorAll('.rating:nth-of-type(1) .emoji span');
+emojis1.forEach(emoji => {
+  emoji.addEventListener('click', () => {
+    // remove a classe 'selected' dos emojis
+    emojis1.forEach(e => e.classList.remove('selected'));
+    // adiciona a classe 'selected' ao emoji clicado
+    emoji.classList.add('selected');
+    // obtém o valor do emoji selecionado
+    const value = emoji.getAttribute('data-value');
+    // envia o valor para o servidor
+    fetch('https://seuservidor.com/rating1', {
+      method: 'POST',
+      body: JSON.stringify({ value }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  });
+});
+
+const emojis2 = document.querySelectorAll('.rating:nth-of-type(2) .emoji span');
+emojis2.forEach(emoji => {
+  emoji.addEventListener('click', () => {
+    // remove a classe 'selected' dos emojis
+    emojis2.forEach(e => e.classList.remove('selected'));
+    // adiciona a classe 'selected' ao emoji clicado
+    emoji.classList.add('selected');
+    // obtém o valor do emoji selecionado
+    const value = emoji.getAttribute('data-value');
+    // envia o valor para o servidor
+    fetch('https://seuservidor.com/rating2', {
+      method: 'POST',
+      body: JSON.stringify({ value }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  });
+});
+
+const emojis3 = document.querySelectorAll('.rating:nth-of-type(3) .emoji span');
+emojis3.forEach(emoji => {
+  emoji.addEventListener('click', () => {
+    // remove a classe 'selected' dos emojis
+    emojis3.forEach(e => e.classList.remove('selected'));
+    // adiciona a classe 'selected' ao emoji clicado
+emoji.classList.add('selected');
+// obtém o valor do emoji selecionado
+const value = emoji.getAttribute('data-value');
+// envia o valor para o servidor
+fetch('https://seuservidor.com/rating3', {
+method: 'POST',
+body: JSON.stringify({ value }),
+headers: {
+'Content-Type': 'application/json'
+}
+});
+});
+});
+
+</script>
