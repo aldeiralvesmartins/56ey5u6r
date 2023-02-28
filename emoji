@@ -1,3 +1,11 @@
+bordas na tabela
+<style>
+    .table-rounded {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+</style>
+
 <table id="tabela-indice" class="table table-hover table-striped" style="width: 100%!important; align-items: center;margin: 0">
 <form id="form-indice" method="POST">
 <script>
