@@ -1,3 +1,30 @@
+$(document).ready(function() {
+    // Event listener para quando o formulário for submetido
+    $('form').submit(function(event) {
+        // Previne o comportamento padrão do formulário
+        event.preventDefault();
+        
+        // Obtém os valores dos campos código e ano
+        var codigo = $('select[name=codigo]').val();
+        var ano = $('select[name=ano]').val();
+        
+        // Faz a chamada AJAX para o arquivo PHP
+        $.ajax({
+            url: 'seu_arquivo_php.php',
+            method: 'POST',
+            data: {
+                codigo: codigo,
+                ano: ano
+            },
+            success: function(response) {
+                // Atualiza a tabela com os novos dados
+                $('table tbody').html(response);
+            }
+        });
+    });
+});
+
+
 <head>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-yF8sP+LZOGnHCgJJnCizM59JjWydp+BWbviTnWXvXJEMmk8nLf3qLz//ZRMJfKR7" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" integrity="sha384-3qBRp5o0lA9UW8L4c15FZxlNl+1QTLGw8RPdPfSvp/tyDnU9XpU6ezcU6eMzptZB" crossorigin="anonymous">
