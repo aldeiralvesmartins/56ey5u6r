@@ -1,3 +1,40 @@
+var whatsappButton = document.getElementById("whatsapp");
+var scrollToTopButton = document.getElementById("scroll-to-top");
+
+window.addEventListener("scroll", function() {
+  if (window.pageYOffset > 0) {
+    whatsappButton.style.display = "none";
+    scrollToTopButton.style.display = "block";
+  } else {
+    whatsappButton.style.display = "block";
+    scrollToTopButton.style.display = "none";
+  }
+});
+
+
+
+#whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+}
+
+#scroll-to-top {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  z-index: 999;
+}
+
+
+<style>
+.navbar-custom {
+    background-color: black !important;
+}
+</style>
+
+
 $(document).ready(function() {
     // Event listener para quando o formulário for submetido
     $('form').submit(function(event) {
