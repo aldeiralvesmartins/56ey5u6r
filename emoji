@@ -1,3 +1,25 @@
+<table id="tabela-indice" class="table table-hover table-striped" style="width: 100%!important; align-items: center;margin: 0">
+<form id="form-indice" method="POST">
+<script>
+  $(document).ready(function() {
+    $('#form-indice').submit(function(event) {
+      event.preventDefault(); // impede que o formulário seja enviado normalmente
+      $.ajax({
+        url: 'caminho/do/seu/script.php', // o caminho para o script PHP que buscará os novos dados
+        type: 'POST',
+        data: $('#form-indice').serialize(), // serializa os dados do formulário para enviá-los ao script PHP
+        success: function(data) {
+          $('#tabela-indice tbody').html(data); // atualiza o corpo da tabela com os novos dados retornados pelo script PHP
+        },
+        error: function() {
+          alert('Erro ao buscar novos dados.'); // exibe uma mensagem de erro se ocorrer algum problema ao buscar os novos dados
+        }
+      });
+    });
+  });
+</script>
+
+
 var whatsappButton = document.getElementById("whatsapp");
 var scrollToTopButton = document.getElementById("scroll-to-top");
 
