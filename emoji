@@ -1,3 +1,72 @@
+class IndiceCorrecaoService
+{
+private $client;
+
+public function __construct()
+{
+    $this->client = new Client();
+}
+
+public function getAllIndexes($indiceSelected)
+{
+    $year = date('Y');
+    $yearAcumulado = $year - 1;
+
+    $url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$year}&dataFinal=31/12/{$year}";
+    $urlAcumulado = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$yearAcumulado}&dataFinal=31/12/{$year}";
+
+    try {
+        $response = $this->client->get($url);
+        $data['All'] = json_decode($response->getBody(), true);
+        $response = $this->client->get($urlAcumulado);
+        $data['Acumulado'] = json_decode($response->getBody(), true);
+        $soma = 0;
+
+        foreach ($data['All'] as $index => &$item) {
+            $soma = $this->getAcumulado($soma, $item['valor']);
+            $item['accumulated'] = ($soma - 1) * 100;
+            $item['accumulated_year'] = $this->getAcumuladoYear($data['Acumulado'], $item['data']);
+        }
+
+        return $data['All'];
+
+    } catch (RequestExceptio $e) {
+        throw new Exception("Erro ao acessar a API do BCB: " . $e->getMessage());
+    }
+}
+
+public function getAcumulado($soma, $valor)
+{
+    if ($soma == 0) {
+        $soma = 1;
+    }
+    $soma *= ((float) $valor / 100) + 1;
+    return $soma;
+}
+
+public function getAcumuladoYear($dados, $dateInit)
+{
+    $dateInitPrev = date('Y-m-d', strtotime('-11 months', strtotime($dateInit)));
+    $soma = 1;
+    $ignore = true;
+
+    foreach ($dados as $dado) {
+        if ($dado['data'] == $dateInitPrev) {
+            $ignore = false;
+        }
+        if ($dado['data'] == $dateInit) {
+            $soma *= ((float) $dado['valor'] / 100) + 1;
+            break;
+        }
+        if (!$ignore) {
+            $soma *= ((float) $dado['valor'] / 100) + 1;
+        }
+    }
+
+    return ($soma - 1) * 100;
+}
+}
+
 bordas na tabela
 <style>
     .table-rounded {
