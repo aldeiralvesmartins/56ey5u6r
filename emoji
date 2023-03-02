@@ -1,3 +1,84 @@
+<?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $avaliacao1 = $_POST["avaliacao1"];
+    $avaliacao2 = $_POST["avaliacao2"];
+    $avaliacao3 = $_POST["avaliacao3"];
+    $comentario = $_POST["comentario"];
+    
+    // Imprime na tela as informações enviadas pelo formulário
+    echo "Avaliação 1: " . $avaliacao1 . "<br>";
+    echo "Avaliação 2: " . $avaliacao2 . "<br>";
+    echo "Avaliação 3: " . $avaliacao3 . "<br>";
+    echo "Comentário: " . $comentario . "<br>";
+  }
+?>
+
+<form id="rating-form">
+  <div class="rating">
+    <label for="rating1" class="form-label">Como você avalia a R2soft?</label>
+    <div class="emoji">
+      <span class="emoji-1" data-value="1">&#128545;</span>
+      <span class="emoji-2" data-value="2">&#9785;&#65039;</span>
+      <span class="emoji-3" data-value="3">&#128528;</span>
+      <span class="emoji-3" data-value="4">&#128522;</span>
+      <span class="emoji-3" data-value="5">&#128516;</span>
+    </div>
+    <input type="hidden" name="rating1" id="rating1" value="">
+  </div>
+  <div class="rating">
+    <label for="rating2" class="form-label">Como você avalia os produtos e serviços da R2soft?</label>
+    <div class="emoji">
+      <span class="emoji-1" data-value="1">&#128545;</span>
+      <span class="emoji-2" data-value="2">&#9785;&#65039;</span>
+      <span class="emoji-3" data-value="3">&#128528;</span>
+      <span class="emoji-3" data-value="4">&#128522;</span>
+      <span class="emoji-3" data-value="5">&#128516;</span>
+    </div>
+    <input type="hidden" name="rating2" id="rating2" value="">
+  </div>
+  <div class="rating">
+    <label for="rating3" class="form-label">Deixe seu comentário:</label>
+    <div class="emoji">
+      <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
+    </div>
+  </div>
+  <button type="submit">Enviar</button>
+</form>
+<script>
+    const emojiList = document.querySelectorAll('.emoji span');
+
+// Add event listeners to each emoji
+emojiList.forEach(emoji => {
+  emoji.addEventListener('click', () => {
+    const ratingInput = document.querySelector(`#${emoji.parentNode.parentNode.parentNode.querySelector('input[type="hidden"]').id}`);
+    ratingInput.value = emoji.getAttribute('data-value');
+  });
+});
+
+// Handle form submission
+document.querySelector('#rating-form').addEventListener('submit', event => {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+
+  // Send data to PHP file
+  fetch('process.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(result => {
+    console.log(result);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+});
+
+</script>
+
+
+
 composer require symfony/cache
 
 
