@@ -1,3 +1,6 @@
+composer require symfony/cache
+
+
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class IndiceCorrecaoService
