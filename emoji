@@ -1,3 +1,63 @@
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+
+class IndiceCorrecaoService
+{
+    private $cache;
+
+    public function __construct()
+    {
+        $this->cache = new FilesystemAdapter();
+    }
+
+    public function getAllIndexes($indiceSelected)
+    {
+        $cacheKey = 'all_indexes_' . $indiceSelected[0]['code'];
+        $cachedData = $this->cache->getItem($cacheKey);
+
+        if (!$cachedData->isHit()) {
+            // Dados não estão armazenados em cache
+            // Fazer a requisição para a API e armazenar os dados em cache
+            $year = date('Y');
+            $yearAcumulado = $year - 1;
+
+            $client = new Client();
+
+            try {
+                $url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$year}&dataFinal=31/12/{$year}";
+                $response = $client->get($url);
+                $num = json_decode($response->getBody(), true);
+                $data['All'] = array_reverse( $num, true);
+                array_splice($data['All'],1);
+                $urlAcumulado = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$yearAcumulado}&dataFinal=31/12/{$year}";
+                $response = $client->get($urlAcumulado);
+                $data['Acumulado'] = json_decode($response->getBody(), true);
+                $soma = 0;
+                foreach ($data['All'] as $index => $item) {
+                    $soma = $this->getAcumulado($soma, $item['valor']);
+                    $data['All'][$index]['accumulated'] = ($soma - 1) * 100;
+                    $data['All'][$index]['accumulated_year'] = $this->getAcumuladoYear($data['Acumulado'], $item['data']);
+                }
+
+                $cachedData->set($data);
+                $cachedData->expiresAfter(3600); // Armazenar em cache por 1 hora
+                $this->cache->save($cachedData);
+
+            } catch (Exception $e) {
+                // Tratar exceção
+            }
+        } else {
+            // Dados estão armazenados em cache
+            $data = $cachedData->get();
+        }
+
+        return $data['All'];
+    }
+}
+
+
+
+
+
 composer require cache/cache
 <?php
 
