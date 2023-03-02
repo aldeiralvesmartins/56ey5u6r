@@ -1,71 +1,55 @@
+composer require cache/cache
+<?php
+
+namespace App\Service;
+
+use GuzzleHttp\Client;
+use Cache\Cache;
+
 class IndiceCorrecaoService
 {
-private $client;
-
-public function __construct()
-{
-    $this->client = new Client();
-}
-
-public function getAllIndexes($indiceSelected)
-{
-    $year = date('Y');
-    $yearAcumulado = $year - 1;
-
-    $url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$year}&dataFinal=31/12/{$year}";
-    $urlAcumulado = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$yearAcumulado}&dataFinal=31/12/{$year}";
-
-    try {
-        $response = $this->client->get($url);
-        $data['All'] = json_decode($response->getBody(), true);
-        $response = $this->client->get($urlAcumulado);
-        $data['Acumulado'] = json_decode($response->getBody(), true);
-        $soma = 0;
-
-        foreach ($data['All'] as $index => &$item) {
-            $soma = $this->getAcumulado($soma, $item['valor']);
-            $item['accumulated'] = ($soma - 1) * 100;
-            $item['accumulated_year'] = $this->getAcumuladoYear($data['Acumulado'], $item['data']);
+    public function getAllIndexes($indiceSelected)
+    {
+        // Verifica se os dados estão em cache
+        $cacheKey = 'indices-' . md5(json_encode($indiceSelected));
+        $cache = Cache::fileSystem(__DIR__ . '/../../cache');
+        $data = $cache->get($cacheKey);
+        if ($data !== null) {
+            return $data;
         }
 
-        return $data['All'];
+        $year = date('Y');
+        $yearAcumulado = $year - 1;
 
-    } catch (RequestExceptio $e) {
-        throw new Exception("Erro ao acessar a API do BCB: " . $e->getMessage());
-    }
-}
+        $client = new Client();
 
-public function getAcumulado($soma, $valor)
-{
-    if ($soma == 0) {
-        $soma = 1;
-    }
-    $soma *= ((float) $valor / 100) + 1;
-    return $soma;
-}
+        try {
+            $url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$year}&dataFinal=31/12/{$year}";
+            $response = $client->get($url);
+            $num = json_decode($response->getBody(), true);
+            $data['All'] = array_reverse($num, true);
+            array_splice($data['All'], 1);
+            $urlAcumulado = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$indiceSelected[0]['code']}/dados?formato=json&dataInicial=01/01/{$yearAcumulado}&dataFinal=31/12/{$year}";
+            $response = $client->get($urlAcumulado);
+            $data['Acumulado'] = json_decode($response->getBody(), true);
+            $soma = 0;
+            foreach ($data['All'] as $index => $item) {
+                $soma = $this->getAcumulado($soma, $item['valor']);
+                $data['All'][$index]['accumulated'] = ($soma - 1) * 100;
+                $data['All'][$index]['accumulated_year'] = $this->getAcumuladoYear($data['Acumulado'], $item['data']);
+            }
 
-public function getAcumuladoYear($dados, $dateInit)
-{
-    $dateInitPrev = date('Y-m-d', strtotime('-11 months', strtotime($dateInit)));
-    $soma = 1;
-    $ignore = true;
+            // Armazena os dados em cache
+            $cache->set($cacheKey, $data, 3600);
 
-    foreach ($dados as $dado) {
-        if ($dado['data'] == $dateInitPrev) {
-            $ignore = false;
-        }
-        if ($dado['data'] == $dateInit) {
-            $soma *= ((float) $dado['valor'] / 100) + 1;
-            break;
-        }
-        if (!$ignore) {
-            $soma *= ((float) $dado['valor'] / 100) + 1;
+            return $data['All'];
+        } catch (Exception $e) {
         }
     }
 
-    return ($soma - 1) * 100;
+    // Resto do código da classe...
 }
-}
+
 
 bordas na tabela
 <style>
